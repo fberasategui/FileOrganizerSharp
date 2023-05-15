@@ -2,9 +2,10 @@
 using System.Text;
 using System.Text.Json;
 
+var configFile = "fileorganizer.config.json";
+
 var getConfig = () =>
 {
-    var configFile = "fileorganizer.config.json";
     if (File.Exists(configFile))
     {
         var config = File.ReadAllText(configFile);
@@ -63,10 +64,14 @@ var organizeFiles = (string directory) =>
     var totalFilesMoved = 0;
     foreach (var file in Directory.GetFiles(directory))
     {
+        var fileName = Path.GetFileName(file);
         if (file == Assembly.GetEntryAssembly().Location)
             continue;
 
-        if (config.exclusions.Contains(Path.GetFileName(file)))
+        if (config.exclusions.Contains(fileName))
+            continue;
+
+        if (fileName == configFile)
             continue;
 
         var extension = Path.GetExtension(file)[1..].ToLower();
